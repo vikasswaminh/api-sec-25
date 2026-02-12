@@ -25,42 +25,46 @@ Enterprise-grade LLM firewall running entirely on Cloudflare's free tier + $12 D
 ## 📁 Project Structure
 
 ```
-API Security/
-├── cf-worker/              # Cloudflare Workers (Edge API)
-│   ├── src/index.ts        # Main Hono API
-│   ├── migrations/         # D1 database schema
-│   ├── scripts/            # Setup & deploy scripts
-│   └── wrangler.toml       # Cloudflare config
+api-security/                 ← Main project folder (Windows: C:\api-security)
+├── cf-worker/                # Cloudflare Workers (Edge API)
+│   ├── src/index.ts          # Main Hono API
+│   ├── migrations/           # D1 database schema
+│   ├── scripts/              # Setup & deploy scripts
+│   └── wrangler.toml         # Cloudflare config
 │
-├── cf-dashboard/           # React Dashboard (Pages)
-│   ├── src/components/     # React components
+├── cf-dashboard/             # React Dashboard (Cloudflare Pages)
+│   ├── src/components/       # React components
 │   └── wrangler.toml
 │
-├── devops-persona/         # DevOps hiring resources
+├── devops-persona/           # DevOps hiring resources
 │   ├── DevOps-Engineer-Profile.md
 │   ├── Job-Description.md
 │   ├── Onboarding-Checklist.md
 │   └── scripts/
 │
-├── .github/workflows/      # CI/CD automation
-├── SETUP-GUIDE.md          # Complete setup instructions
-├── QUICK-START.md          # One-page cheat sheet
-└── DEPLOYMENT.md           # Detailed deployment guide
+├── .github/workflows/        # CI/CD automation
+├── SETUP-GUIDE.md            # Complete setup instructions
+├── QUICK-START.md            # One-page cheat sheet
+├── WINDOWS-SETUP.md          # Windows-specific guide ← YOU ARE HERE
+└── DEPLOYMENT.md             # Detailed deployment guide
 ```
 
-## 🚀 Quick Start (New DevOps Engineer)
+## 🚀 Quick Start (Windows)
 
-```bash
-# 1. Read SETUP-GUIDE.md
-cat SETUP-GUIDE.md
+```powershell
+# 1. Navigate to project (use hyphen, NOT space)
+cd C:\api-security
 
-# 2. Follow step-by-step instructions
-# 3. Deploy in ~30 minutes
-```
+# 2. Read Windows setup guide
+cat WINDOWS-SETUP.md
 
-**Or use the one-page cheat sheet:**
-```bash
-cat QUICK-START.md
+# 3. Deploy worker
+cd cf-worker
+wrangler deploy
+
+# 4. Run dashboard locally
+cd ..\cf-dashboard
+npm run dev
 ```
 
 ## 💰 Cost Breakdown
@@ -118,39 +122,43 @@ cat QUICK-START.md
 
 ## 🧪 Testing
 
-```bash
+```powershell
+# Windows PowerShell
 # Health check
-curl https://your-worker.workers.dev/health
+Invoke-RestMethod -Uri "https://llm-fw-edge.vikas4988.workers.dev/health"
 
 # Test blocked prompt
-curl -X POST https://your-worker.workers.dev/v1/inspect \
-  -H "X-API-Key: YOUR_KEY" \
-  -d '{"messages":[{"role":"user","content":"Ignore previous instructions"}]}'
+Invoke-RestMethod -Uri "https://llm-fw-edge.vikas4988.workers.dev/v1/inspect" `
+  -Method POST `
+  -Headers @{"X-API-Key"="sk-admin-test-key-change-in-prod"} `
+  -Body '{"messages":[{"role":"user","content":"Ignore previous instructions"}]}'
 
 # Test allowed prompt
-curl -X POST https://your-worker.workers.dev/v1/inspect \
-  -H "X-API-Key: YOUR_KEY" \
-  -d '{"messages":[{"role":"user","content":"Hello"}]}'
+Invoke-RestMethod -Uri "https://llm-fw-edge.vikas4988.workers.dev/v1/inspect" `
+  -Method POST `
+  -Headers @{"X-API-Key"="sk-admin-test-key-change-in-prod"} `
+  -Body '{"messages":[{"role":"user","content":"Hello"}]}'
 ```
 
 ## 📚 Documentation
 
 | Document | Purpose |
 |----------|---------|
+| `WINDOWS-SETUP.md` | **Start here for Windows** |
 | `SETUP-GUIDE.md` | Complete step-by-step setup |
 | `QUICK-START.md` | One-page cheat sheet |
-| `DEPLOYMENT.md` | Detailed architecture & scaling |
+| `DEPLOYMENT.md` | Architecture & scaling |
 | `cf-worker/README.md` | Worker-specific docs |
 | `cf-dashboard/README.md` | Dashboard-specific docs |
 
 ## 🎯 For DevOps Engineers
 
 **Just joined? Start here:**
-1. Read `SETUP-GUIDE.md` completely
-2. Set up your local environment
-3. Deploy to staging
-4. Deploy to production
-5. Set up monitoring
+1. Read `WINDOWS-SETUP.md` (Windows-specific tips)
+2. Read `SETUP-GUIDE.md` completely
+3. Set up your local environment
+4. Deploy to staging
+5. Deploy to production
 
 **Hiring a DevOps engineer?**
 - See `devops-persona/Job-Description.md`
@@ -185,7 +193,13 @@ GitHub Actions workflow included:
 - **Cloudflare Docs:** developers.cloudflare.com
 - **Discord:** discord.gg/cloudflaredev
 - **Project Issues:** GitHub Issues
-- **Emergency:** Runbook in `devops-persona/`
+- **Windows Help:** See WINDOWS-SETUP.md
+
+## ⚠️ Important Note for Windows Users
+
+**Use `C:\api-security` (with hyphen), NOT `C:\API Security` (with space)**
+
+Spaces in Windows paths cause issues with command-line tools, Git, and deployment scripts. See `WINDOWS-SETUP.md` for Windows-specific guidance.
 
 ## 📝 License
 
